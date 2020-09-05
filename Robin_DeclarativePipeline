@@ -1,0 +1,46 @@
+pipeline
+{
+    agent any
+    stages
+    {
+        stage('ContinuousDownload')
+        {
+            steps
+            {
+                git 'https://github.com/devopsrobin/git_jenkins.git'
+            }
+        }
+        stage('ContinuousBuild')
+        {
+            steps
+            {
+              sh label: '', script: 'mvn package'
+            }
+                
+        }
+        stage('ContinuousDeployment')
+        {
+            steps
+            {
+                sh label: '', script: 'scp /home/robin/.jenkins/workspace/DeclarativePipeline/webapp/target/webapp.war robin@192.168.0.111:/home/robin/tomcat9/webapps/qa_jenkins5.war'
+            }
+            
+        }
+        stage('ContinuousTesting')
+        {
+            steps
+            {
+                git 'https://github.com/devopsrobin/Testing_Jenkins.git'
+                  sh label: '', script: 'echo "Testing Passed"'
+            }
+        }
+        stage('ContinuousDelivery')
+        {
+          steps
+          {
+              sh label: '', script: 'scp /home/robin/.jenkins/workspace/DeclarativePipeline/webapp/target/webapp.war robin@192.168.0.112:/home/robin/tomcat9/webapps/prod_jenkins5.war'
+          }
+        }
+    }
+    
+}
