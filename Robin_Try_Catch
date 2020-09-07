@@ -11,7 +11,7 @@ pipeline
 				{
 				   try
 				   {
-                            git 'https://github.com/devopsrobin/git_jenkins.git'
+					git 'https://github.com/devopsrobin/git_jenkins.git'
 				   }
 				   catch(Exception e1)
 				   {
@@ -29,8 +29,8 @@ pipeline
 				{
 				    try
 					{
-                          sh label: '', script: 'mvn package'
-				    }
+                          			sh label: '', script: 'mvn package'
+				    	}
 					catch(Exception e2)
 					{
 					    mail bcc: '', body: 'Jenkins is unable to create an artifact', cc: '', from: '', replyTo: '', subject: 'Build issue', to: 'developers@gmail.com'
@@ -47,15 +47,15 @@ pipeline
 				{
 				    try
 					{
-                       sh label: '', script: 'scp /var/lib/jenkins/workspace/DeclarativePipeline/webapp/target/webapp.war ubuntu@172.31.36.247:/var/lib/tomcat8/webapps/newtest1.war'
-                    }
+                              			sh label: '', script: 'scp /home/ec2-user/.jenkins/workspace/DeclarativePipeline/webapp/target/webapp.war ec2-user@172.31.5.52:/home/ec2-user/tomcat9/webapps/qa_jenkins3.war' 
+                    			}
 					catch(Exception e3)
 					{
 					    mail bcc: '', body: 'Jenkins is unable to deploy into the QAServers', cc: '', from: '', replyTo: '', subject: 'Deployment issue', to: 'middleware@gmail.com'
 					    exit(1);
 					}
 				}
-			}
+		}
         }
         stage('ContTesting')
         {
@@ -65,16 +65,15 @@ pipeline
 				{
 				    try
 					{
-                         git 'https://github.com/selenium-saikrishna/FunctionalTesting.git'
-                         sh label: '', script: 'echo "Testing Passed"'  
-                    }
+                         			git 'https://github.com/devopsrobin/Testing_Jenkins.git'
+                         			sh label: '', script: 'echo "Testing Passed"'  
+                    			}
 					catch(Exception e4)
 					{
 					    mail bcc: '', body: 'Functional Testing has failed', cc: '', from: '', replyTo: '', subject: 'Testingt issue', to: 'testers@gmail.com'
 			            exit(1);
 					}
-			    }
-			}
+			    	}
 		}
         }
     
@@ -86,8 +85,8 @@ pipeline
 			{
 			     try
 				 {
-				    sh label: '', script: 'scp /var/lib/jenkins/workspace/DeclarativePipeline/webapp/target/webapp.war ubuntu@172.31.35.219:/var/lib/tomcat8/webapps/prod.war' 
-		         }
+				           sh label: '', script: 'scp /home/ec2-user/.jenkins/workspace/DeclarativePipeline/webapp/target/webapp.war ec2-user@172.31.13.57:/home/ec2-user/tomcat9/webapps/prod_jenkins3.war'  
+		         	}
 				 catch(Exception e5)
 				 {
 				    mail bcc: '', body: 'Jenkins is unable to deploy into prod servers', cc: '', from: '', replyTo: '', subject: 'Delivery issue', to: 'delivery@gmail.com'
