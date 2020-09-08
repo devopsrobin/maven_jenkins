@@ -2,7 +2,7 @@ node('master')
 {
     stage('ContinuousDownload:Master') 
     {
-        git 'https://github.com/devopsrobin/git_jenkins.git'
+        git 'https://github.com/devopsrobin/maven_jenkins.git'
     }
     stage('ContinuousBuild:Master') 
     {
