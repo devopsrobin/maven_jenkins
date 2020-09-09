@@ -1,0 +1,51 @@
+pipeline
+{
+    agent any
+    stages
+    {
+        stage('ContinuousDownload')
+        {
+            steps
+                {
+				    git 'https://github.com/devopsrobin/git_jenkins.git'
+				        }
+        }
+        
+        
+        stage('ContinuousBuild')
+        {
+            steps
+            {
+              sh label: '', script: 'mvn package'
+			      }
+		}
+		
+        stage('ContinuousDeployment')
+        {
+            steps
+				      {
+                 sh label: '', script: 'scp /home/ec2-user/.jenkins/workspace/DeclarativePipeline/webapp/target/webapp.war ec2-user@172.31.5.52:/home/ec2-user/tomcat9/webapps/qa_jenkins6.war' 
+                }
+        }
+        stage('ContinuousTesting')
+        {
+            steps
+            		{
+                        git 'https://github.com/devopsrobin/Testing_Jenkins.git'
+                     	sh label: '', script: 'echo "Testing Passed"'  
+                    }
+        }
+    }
+      
+        post
+        {
+            success
+            {
+                sh label: '', script: 'scp /home/ec2-user/.jenkins/workspace/DeclarativePipeline/webapp/target/webapp.war ec2-user@172.31.13.57:/home/ec2-user/tomcat9/webapps/prod_jenkins6.war'  
+            }
+            failure
+            {
+                mail bcc: '', body: 'Jenkins has failed to perform CI/CD', cc: '', from: '', replyTo: '', subject: 'Jenkins job failed', to: 'git_admin@gmail.com,developers@gmail.com,testers@gmail.com,middleware@gmail.com'
+            }
+        }
+}  
